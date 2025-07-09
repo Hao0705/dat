@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Birthday Countdown</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            overflow: hidden;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+
+        .content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: #00ff00;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .countdown {
+            font-size: 18vw;
+            text-shadow: 0 0 40px currentColor, 0 0 80px currentColor;
+            opacity: 0;
+            transition: all 0.5s ease-in-out;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            animation: pulse 1s infinite alternate;
+        }
+
+        .countdown.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(0.95); }
+            100% { transform: translate(-50%, -50%) scale(1.05); }
+        }
+
+        .number-3 {
+            color: #ff0066;
+            text-shadow: 0 0 40px #ff0066, 0 0 80px #ff0066;
+        }
+
+        .number-2 {
+            color: #00ff00;
+            text-shadow: 0 0 40px #00ff00, 0 0 80px #00ff00;
+        }
+
+        .number-1 {
+            color: #00bfff;
+            text-shadow: 0 0 40px #00bfff, 0 0 80px #00bfff;
+        }
+
+        .cake {
+            font-size: 72vw;
+            opacity: 0;
+            transition: all 1s ease-in-out;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(0.5);
+            animation: float 2s ease-in-out infinite alternate;
+        }
+
+        .cake.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        @keyframes float {
+            0% { transform: translate(-50%, -50%) scale(1) translateY(0px); }
+            100% { transform: translate(-50%, -50%) scale(1) translateY(-20px); }
+        }
+
+        .birthday-text {
+            font-size: 8vw;
+            color: #ffffff;
+            text-shadow: 0 0 50px #ffffff, 0 0 100px #ffffff;
+            opacity: 0;
+            transition: all 1s ease-in-out;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        .birthday-text.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        @keyframes glow {
+            0% { text-shadow: 0 0 50px #ffffff, 0 0 100px #ffffff; }
+            100% { text-shadow: 0 0 60px #ffffff, 0 0 120px #ffffff, 0 0 180px #ffffff; }
+        }
+
+        .date-text {
+            font-size: 7vw;
+            color: #ffff00;
+            text-shadow: 0 0 40px #ffff00, 0 0 80px #ffff00;
+            opacity: 0;
+            transition: all 1s ease-in-out;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            animation: shimmer 1.5s ease-in-out infinite alternate;
+        }
+
+        .date-text.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        @keyframes shimmer {
+            0% { text-shadow: 0 0 40px #ffff00, 0 0 80px #ffff00; }
+            100% { text-shadow: 0 0 50px #ffff00, 0 0 100px #ffff00, 0 0 150px #ffff00; }
+        }
+
+        .name-text {
+            font-size: 7.5vw;
+            color: #ff8c00;
+            text-shadow: 0 0 50px #ff8c00, 0 0 100px #ff8c00;
+            opacity: 0;
+            transition: all 1s ease-in-out;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            animation: rainbow 3s ease-in-out infinite;
+        }
+
+        .name-text.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        @keyframes rainbow {
+            0% { 
+                color: #ff8c00; 
+                text-shadow: 0 0 50px #ff8c00, 0 0 100px #ff8c00; 
+            }
+            25% { 
+                color: #ff1493; 
+                text-shadow: 0 0 50px #ff1493, 0 0 100px #ff1493; 
+            }
+            50% { 
+                color: #00ff00; 
+                text-shadow: 0 0 50px #00ff00, 0 0 100px #00ff00; 
+            }
+            75% { 
+                color: #00bfff; 
+                text-shadow: 0 0 50px #00bfff, 0 0 100px #00bfff; 
+            }
+            100% { 
+                color: #ff8c00; 
+                text-shadow: 0 0 50px #ff8c00, 0 0 100px #ff8c00; 
+            }
+        }
+
+        .final-text {
+            font-size: 6vw;
+            color: #ff69b4;
+            text-shadow: 0 0 50px #ff69b4, 0 0 100px #ff69b4;
+            opacity: 0;
+            transition: all 1s ease-in-out;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            animation: sparkle 2s ease-in-out infinite alternate;
+        }
+
+        .final-text.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        @keyframes sparkle {
+            0% { 
+                color: #ff69b4; 
+                text-shadow: 0 0 50px #ff69b4, 0 0 100px #ff69b4; 
+            }
+            50% { 
+                color: #ffb6c1; 
+                text-shadow: 0 0 60px #ffb6c1, 0 0 120px #ffb6c1, 0 0 180px #ffb6c1; 
+            }
+            100% { 
+                color: #ff1493; 
+                text-shadow: 0 0 50px #ff1493, 0 0 100px #ff1493; 
+            }
+        }
+
+        /* Responsive adjustments for landscape mode */
+        @media (orientation: landscape) {
+            .countdown {
+                font-size: 15vh;
+            }
+            
+            .cake {
+                font-size: 60vh;
+            }
+            
+            .birthday-text {
+                font-size: 7vh;
+            }
+            
+            .date-text {
+                font-size: 5.5vh;
+            }
+            
+            .name-text {
+                font-size: 6vh;
+            }
+            
+            .final-text {
+                font-size: 5vh;
+            }
+        }
+
+        /* Add screen flash effects */
+        .flash {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 3;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.1s ease-out;
+        }
+
+        .flash.active {
+            opacity: 1;
+        }
+
+        /* Dust particles container */
+        .dust-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 4;
+        }
+
+        .dust-particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #ffffff;
+            border-radius: 50%;
+            opacity: 0;
+            pointer-events: none;
+            box-shadow: 0 0 4px currentColor;
+        }
+
+        .dust-particle.active {
+            animation: dustFloat 2s ease-out forwards;
+        }
+
+        @keyframes dustFloat {
+            0% {
+                opacity: 0;
+                transform: translateY(0px) scale(0.5);
+            }
+            10% {
+                opacity: 1;
+                transform: translateY(-20px) scale(1);
+            }
+            90% {
+                opacity: 1;
+                transform: translateY(-200px) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-300px) scale(0.5);
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="matrix"></canvas>
+    <div class="flash" id="flash"></div>
+    <div class="dust-container" id="dustContainer"></div>
+    <div class="content">
+        <div class="countdown" id="countdown"></div>
+        <div class="cake" id="cake">🎂</div>
+        <div class="date-text" id="dateText">10/07/2025</div>
+        <div class="birthday-text" id="birthdayText">HAPPY BIRTHDAY</div>
+        <div class="name-text" id="nameText">LÊ LINH CHI</div>
+        <div class="final-text" id="finalText">SINH NHẬT VUI VẺ😊😊😊</div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        const flash = document.getElementById('flash');
+        const dustContainer = document.getElementById('dustContainer');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        resizeCanvas();
+
+        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()♠♥♦♣◆◇○●★☆';
+        const fontSize = 18;
+        let columns = Math.floor(canvas.width / fontSize);
+        let particles = [];
+        let trails = [];
+
+        function initParticles() {
+            particles = [];
+            trails = [];
+            const particleCount = Math.floor(columns * 5);
+            
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: -Math.random() * 300,
+                    speed: Math.random() * 2 + 1,
+                    char: letters[Math.floor(Math.random() * letters.length)],
+                    opacity: Math.random() * 0.8 + 0.2,
+                    size: Math.random() * 8 + 12,
+                    color: getRandomGoldColor(),
+                    trail: []
+                });
+            }
+        }
+
+        function getRandomGoldColor() {
+            const goldColors = [
+                '#FFD700', '#FFA500', '#FFFF00', '#FFE135', '#DAA520', 
+                '#F4A460', '#FFB347', '#FFCC00', '#B8860B'
+            ];
+            return goldColors[Math.floor(Math.random() * goldColors.length)];
+        }
+
+        function addScreenFlash() {
+            flash.classList.add('active');
+            setTimeout(() => {
+                flash.classList.remove('active');
+            }, 100);
+        }
+
+        // Dust effect functions
+        function createDustParticles(element, color = '#ffffff', beforeShow = true) {
+            const rect = element.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            const particleCount = beforeShow ? 30 : 25;
+            const spread = beforeShow ? 150 : 200;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'dust-particle';
+                particle.style.left = (centerX + (Math.random() - 0.5) * spread) + 'px';
+                particle.style.top = (centerY + (Math.random() - 0.5) * spread) + 'px';
+                particle.style.background = color;
+                particle.style.boxShadow = `0 0 6px ${color}`;
+                
+                // Random size for variety
+                const size = Math.random() * 3 + 1;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                
+                // Random animation delay
+                particle.style.animationDelay = Math.random() * 0.5 + 's';
+                
+                dustContainer.appendChild(particle);
+                
+                // Trigger animation
+                setTimeout(() => {
+                    particle.classList.add('active');
+                }, 50);
+                
+                // Remove particle after animation
+                setTimeout(() => {
+                    if (particle.parentNode) {
+                        particle.parentNode.removeChild(particle);
+                    }
+                }, 3000);
+            }
+        }
+
+        function createDissolveEffect(element, color = '#ffffff') {
+            const rect = element.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            
+            // Create dissolve particles
+            for (let i = 0; i < 40; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'dust-particle';
+                particle.style.left = (centerX + (Math.random() - 0.5) * rect.width) + 'px';
+                particle.style.top = (centerY + (Math.random() - 0.5) * rect.height) + 'px';
+                particle.style.background = color;
+                particle.style.boxShadow = `0 0 4px ${color}`;
+                
+                const size = Math.random() * 2 + 1;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                
+                particle.style.animationDelay = Math.random() * 0.3 + 's';
+                particle.style.animationDuration = (Math.random() * 0.5 + 1.5) + 's';
+                
+                dustContainer.appendChild(particle);
+                
+                setTimeout(() => {
+                    particle.classList.add('active');
+                }, 20);
+                
+                setTimeout(() => {
+                    if (particle.parentNode) {
+                        particle.parentNode.removeChild(particle);
+                    }
+                }, 2500);
+            }
+        }
+
+        initParticles();
+
+        function drawParticles() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.03)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < particles.length; i++) {
+                const particle = particles[i];
+                
+                // Draw trail với hiệu ứng lấp lánh
+                for (let j = 0; j < particle.trail.length; j++) {
+                    const trailPoint = particle.trail[j];
+                    const trailOpacity = particle.opacity * (j / particle.trail.length) * 0.4;
+                    
+                    const shimmer = Math.sin(Date.now() * 0.005 + j * 0.5) * 0.3 + 0.7;
+                    
+                    ctx.fillStyle = particle.color;
+                    ctx.globalAlpha = trailOpacity * shimmer;
+                    ctx.font = 'bold ' + (particle.size * 0.8) + 'px Courier New';
+                    
+                    ctx.shadowColor = particle.color;
+                    ctx.shadowBlur = 10;
+                    
+                    ctx.fillText(trailPoint.char, trailPoint.x, trailPoint.y);
+                }
+                
+                // Draw main particle
+                const mainShimmer = Math.sin(Date.now() * 0.008 + i * 0.3) * 0.4 + 0.6;
+                
+                ctx.fillStyle = particle.color;
+                ctx.globalAlpha = particle.opacity * mainShimmer;
+                ctx.font = 'bold ' + particle.size + 'px Courier New';
+                
+                ctx.shadowColor = particle.color;
+                ctx.shadowBlur = 20;
+                
+                ctx.fillText(particle.char, particle.x, particle.y);
+                
+                ctx.shadowBlur = 0;
+                
+                // Update trail
+                particle.trail.push({
+                    x: particle.x,
+                    y: particle.y,
+                    char: particle.char
+                });
+                
+                if (particle.trail.length > 4) {
+                    particle.trail.shift();
+                }
+                
+                particle.y += particle.speed;
+                particle.x += (Math.random() - 0.5) * 0.5;
+                
+                if (Math.random() < 0.08) {
+                    particle.char = letters[Math.floor(Math.random() * letters.length)];
+                }
+                
+                if (Math.random() < 0.03) {
+                    particle.color = getRandomGoldColor();
+                }
+                
+                particle.opacity += (Math.random() - 0.5) * 0.15;
+                if (particle.opacity > 1) particle.opacity = 1;
+                if (particle.opacity < 0.1) particle.opacity = 0.1;
+                
+                if (particle.y > canvas.height + 50) {
+                    particle.y = -Math.random() * 150;
+                    particle.x = Math.random() * canvas.width;
+                    particle.speed = Math.random() * 2 + 1;
+                    particle.char = letters[Math.floor(Math.random() * letters.length)];
+                    particle.color = getRandomGoldColor();
+                    particle.trail = [];
+                }
+            }
+            
+            ctx.globalAlpha = 1;
+        }
+
+        setInterval(drawParticles, 25);
+
+        window.addEventListener('load', () => {
+            setTimeout(startCountdown, 1000);
+        });
+
+        function startCountdown() {
+            const countdown = document.getElementById('countdown');
+            const cake = document.getElementById('cake');
+            const dateText = document.getElementById('dateText');
+            const birthdayText = document.getElementById('birthdayText');
+            const nameText = document.getElementById('nameText');
+            const finalText = document.getElementById('finalText');
+
+            let count = 3;
+            
+            function showNumber() {
+                if (count > 0) {
+                    // Create dust before showing number
+                    let color = '#ff0066';
+                    if (count === 2) color = '#00ff00';
+                    if (count === 1) color = '#00bfff';
+                    
+                    createDustParticles(countdown, color, true);
+                    
+                    setTimeout(() => {
+                        countdown.textContent = count;
+                        countdown.classList.remove('number-3', 'number-2', 'number-1');
+                        
+                        if (count === 3) countdown.classList.add('number-3');
+                        else if (count === 2) countdown.classList.add('number-2');
+                        else if (count === 1) countdown.classList.add('number-1');
+                        
+                        countdown.classList.add('show');
+                        addScreenFlash();
+                    }, 300);
+                    
+                    setTimeout(() => {
+                        // Create dissolve effect before hiding
+                        createDissolveEffect(countdown, color);
+                        countdown.classList.remove('show');
+                        count--;
+                        setTimeout(showNumber, 500);
+                    }, 1000);
+                } else {
+                    setTimeout(() => {
+                        // Cake sequence
+                        createDustParticles(cake, '#FFD700', true);
+                        setTimeout(() => {
+                            cake.classList.add('show');
+                            addScreenFlash();
+                        }, 300);
+                        
+                        setTimeout(() => {
+                            createDissolveEffect(cake, '#FFD700');
+                            cake.classList.remove('show');
+                            
+                            setTimeout(() => {
+                                // Date sequence
+                                createDustParticles(dateText, '#ffff00', true);
+                                setTimeout(() => {
+                                    dateText.classList.add('show');
+                                    addScreenFlash();
+                                }, 300);
+                                
+                                setTimeout(() => {
+                                    createDissolveEffect(dateText, '#ffff00');
+                                    dateText.classList.remove('show');
+                                    
+                                    setTimeout(() => {
+                                        // Birthday text sequence
+                                        createDustParticles(birthdayText, '#ffffff', true);
+                                        setTimeout(() => {
+                                            birthdayText.classList.add('show');
+                                            addScreenFlash();
+                                        }, 300);
+                                        
+                                        setTimeout(() => {
+                                            createDissolveEffect(birthdayText, '#ffffff');
+                                            birthdayText.classList.remove('show');
+                                            
+                                            setTimeout(() => {
+                                                // Name sequence
+                                                createDustParticles(nameText, '#ff8c00', true);
+                                                setTimeout(() => {
+                                                    nameText.classList.add('show');
+                                                    addScreenFlash();
+                                                }, 300);
+                                                
+                                                setTimeout(() => {
+                                                    createDissolveEffect(nameText, '#ff8c00');
+                                                    nameText.classList.remove('show');
+                                                    
+                                                    setTimeout(() => {
+                                                        // Final text sequence
+                                                        createDustParticles(finalText, '#ff69b4', true);
+                                                        setTimeout(() => {
+                                                            finalText.classList.add('show');
+                                                            addScreenFlash();
+                                                        }, 300);
+                                                    }, 2500);
+                                                }, 4500);
+                                            }, 2500);
+                                        }, 4500);
+                                    }, 2500);
+                                }, 4500);
+                            }, 2500);
+                        }, 4500);
+                    }, 500);
+                }
+            }
+            
+            showNumber();
+        }
+
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            columns = Math.floor(canvas.width / fontSize);
+            initParticles();
+        });
+
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => {
+                resizeCanvas();
+                columns = Math.floor(canvas.width / fontSize);
+                initParticles();
+            }, 100);
+        });
+    </script>
+</body>
+</html>
